@@ -1,10 +1,10 @@
-# The Edison - Your Essay Formatting Assistant
+# The Edison -- _never struggle with formatting an essay again_
 
-Tired of switching between tabs, asking ChatGPT or Claude if your essay formatting is correct, and still struggling to get it right?  
-Frustrated by losing points due to simple formatting mistakes?  
-Annoyed by constantly paying for essay formatting?
+Tired of switching between Google tabs, asking ChatGPT or Claude if your essay formatting is okay (when you know it's not) and struggling to fix formatting when you know they won't get it right?  
+Tired of getting a B because you missed one simple formatting mistake?  
+Tired of having to constantly pay to format essays?
 
-Meet The Edison - your reliable tool for essay formatting. It accurately formats your essays in MLA, APA, Chicago, Harvard, or any other required style. No more stress, just correctly formatted essays.
+Well, meet The Edison - a formatting tool that formats your essays perfectly in MLA, APA, Chicago, Harvard, or whatever format necessary. You don't have to cry anymore; The Edison is here to format your essay for you.
 
 **[Try It Now](https://anaya-yorke.github.io/The-Edison)**
 
@@ -29,7 +29,7 @@ Meet The Edison - your reliable tool for essay formatting. It accurately formats
 2. Select your citation style.
 3. Enter any professor-specific requirements.
 4. Click "Format Essay".
-5. Export your formatted essay.
+5. Export your formatted essay!
 
 ---
 
