@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "vercel-build": "export NEXT_TYPESCRIPT_CONFIG_PATH=tsconfig.deploy.json && next build",
+    "vercel-build": "next build && next export",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"

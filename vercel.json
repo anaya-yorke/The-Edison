@@ -1,6 +1,8 @@
 {
   "version": 2,
-  "framework": "nextjs",
+  "buildCommand": "npm run vercel-build",
+  "outputDirectory": "out",
+  "framework": null,
   "env": {
     "NEXT_TYPESCRIPT_CONFIG_PATH": "tsconfig.deploy.json",
     "NODE_ENV": "production",
