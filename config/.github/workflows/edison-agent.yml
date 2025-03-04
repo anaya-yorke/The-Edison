@@ -63,7 +63,7 @@ jobs:
           npm install --no-save node-fetch
       
       - name: Run auto-updater
-        run: node .github/scripts/auto-updater.js safe
+        run: node config/.github/scripts/auto-updater.js safe
       
       - name: Push updates if any
         run: |
@@ -98,7 +98,7 @@ jobs:
         run: npm ci
       
       - name: Run code organization script
-        run: node .github/scripts/organize-code.js
+        run: node config/.github/scripts/organize-code.js
       
       - name: Create PR for code organization
         uses: peter-evans/create-pull-request@v4
@@ -131,7 +131,7 @@ jobs:
         run: npx tsc --noEmit
       
       - name: Run dead code elimination
-        run: node .github/scripts/dead-code-eliminator.js
+        run: node config/.github/scripts/dead-code-eliminator.js
       
       - name: Run import optimizer
         run: npx organize-imports-cli src/**/*.ts src/**/*.tsx
@@ -164,13 +164,13 @@ jobs:
         run: npx postcss src/**/*.css --use autoprefixer cssnano --replace
       
       - name: Run UI consistency checker
-        run: node .github/scripts/ui-consistency-check.js
+        run: node config/.github/scripts/ui-consistency-check.js
       
       - name: Run accessibility fixer
-        run: node .github/scripts/accessibility-fixer.js
+        run: node config/.github/scripts/accessibility-fixer.js
       
       - name: Run responsive design checker
-        run: node .github/scripts/responsive-design-check.js
+        run: node config/.github/scripts/responsive-design-check.js
       
       - name: Create PR for UI improvements
         uses: peter-evans/create-pull-request@v4
@@ -197,16 +197,16 @@ jobs:
         run: npm ci
       
       - name: Run duplicate file detector
-        run: node .github/scripts/duplicate-detector.js
+        run: node config/.github/scripts/duplicate-detector.js
       
       - name: Run unused file detector
-        run: node .github/scripts/unused-file-detector.js
+        run: node config/.github/scripts/unused-file-detector.js
       
       - name: Generate file cleanup report
-        run: node .github/scripts/generate-cleanup-report.js
+        run: node config/.github/scripts/generate-cleanup-report.js
       
       - name: Run automated cleanup
-        run: node .github/scripts/auto-cleanup.js
+        run: node config/.github/scripts/auto-cleanup.js
       
       - name: Create PR for file cleanup
         uses: peter-evans/create-pull-request@v4
@@ -239,10 +239,10 @@ jobs:
         run: npx jscpd src --min-lines 5 --max-size 1mb
       
       - name: Run bug detector
-        run: node .github/scripts/bug-detector.js
+        run: node config/.github/scripts/bug-detector.js
       
       - name: Run automated fixes
-        run: node .github/scripts/auto-fix-bugs.js
+        run: node config/.github/scripts/auto-fix-bugs.js
       
       - name: Create PR for bug fixes
         uses: peter-evans/create-pull-request@v4
@@ -276,7 +276,7 @@ jobs:
       - name: Run deployment fixer
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-        run: node .github/scripts/edison-agent.js deploy-fix ${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }}
+        run: node config/.github/scripts/edison-agent.js deploy-fix ${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }}
       
       - name: Check for changes
         id: git-check
@@ -326,7 +326,7 @@ jobs:
         run: npm ci
       
       - name: Run mini organizer for code restructuring
-        run: node .github/scripts/edison-agent.js restructure ${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }}
+        run: node config/.github/scripts/edison-agent.js restructure ${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }}
       
       - name: Check for changes
         id: git-check

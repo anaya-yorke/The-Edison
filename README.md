@@ -83,19 +83,19 @@ Edison Agent is an advanced automation tool that maintains the codebase with min
 
 ```bash
 # Run all maintenance operations
-node .github/scripts/edison-agent.js full
+node config/.github/scripts/edison-agent.js full
 
 # Individual operations
-node .github/scripts/edison-agent.js organize   # Organize code
-node .github/scripts/edison-agent.js fix        # Fix bugs
-node .github/scripts/edison-agent.js ui         # Ensure UI consistency
-node .github/scripts/edison-agent.js cleanup    # Remove unused files
-node .github/scripts/edison-agent.js update     # Update dependencies and formats
-node .github/scripts/edison-agent.js deploy-fix # Fix deployment issues
-node .github/scripts/edison-agent.js restructure # Deep code restructuring
+node config/.github/scripts/edison-agent.js organize   # Organize code
+node config/.github/scripts/edison-agent.js fix        # Fix bugs
+node config/.github/scripts/edison-agent.js ui         # Ensure UI consistency
+node config/.github/scripts/edison-agent.js cleanup    # Remove unused files
+node config/.github/scripts/edison-agent.js update     # Update dependencies and formats
+node config/.github/scripts/edison-agent.js deploy-fix # Fix deployment issues
+node config/.github/scripts/edison-agent.js restructure # Deep code restructuring
 
 # Generate a report without making changes
-node .github/scripts/edison-agent.js report
+node config/.github/scripts/edison-agent.js report
 
 # Additional flags
 --dry-run           # Don't apply changes, just report
@@ -112,24 +112,24 @@ The auto-update feature keeps your codebase current by:
 - Updating package dependencies to latest compatible versions
 - Updating citation styles and formatting standards
 - Refreshing UI components according to the design system
-- Generating comprehensive update reports in `.github/reports/`
+- Generating comprehensive update reports in `config/.github/reports/`
 
 Usage examples:
 ```bash
 # Safe update (minimal risk)
-node .github/scripts/edison-agent.js update
+node config/.github/scripts/edison-agent.js update
 
 # Moderate update (balanced approach)
-node .github/scripts/edison-agent.js update --safety moderate
+node config/.github/scripts/edison-agent.js update --safety moderate
 
 # Aggressive update (latest everything)
-node .github/scripts/edison-agent.js update --safety aggressive
+node config/.github/scripts/edison-agent.js update --safety aggressive
 
 # Create a PR with the updates
-node .github/scripts/edison-agent.js update --pr
+node config/.github/scripts/edison-agent.js update --pr
 
 # Just check what would be updated without making changes
-node .github/scripts/edison-agent.js update --dry-run
+node config/.github/scripts/edison-agent.js update --dry-run
 ```
 
 ##### Deployment Fixer
@@ -144,13 +144,13 @@ The deployment fixer automatically resolves common Vercel deployment issues:
 Usage examples:
 ```bash
 # Fix deployment issues
-node .github/scripts/edison-agent.js deploy-fix
+node config/.github/scripts/edison-agent.js deploy-fix
 
 # Fix issues for a specific Vercel project
-node .github/scripts/edison-agent.js deploy-fix --target my-project-name
+node config/.github/scripts/edison-agent.js deploy-fix --target my-project-name
 
 # Generate a report without making changes
-node .github/scripts/edison-agent.js deploy-fix --dry-run
+node config/.github/scripts/edison-agent.js deploy-fix --dry-run
 ```
 
 ##### Mini Code Organizer
@@ -166,16 +166,16 @@ The mini code organizer performs deep restructuring of your codebase:
 Usage examples:
 ```bash
 # Restructure the entire codebase
-node .github/scripts/edison-agent.js restructure
+node config/.github/scripts/edison-agent.js restructure
 
 # Generate a report without making changes
-node .github/scripts/edison-agent.js restructure --dry-run
+node config/.github/scripts/edison-agent.js restructure --dry-run
 
 # Restructure and create a pull request
-node .github/scripts/edison-agent.js restructure --pr
+node config/.github/scripts/edison-agent.js restructure --pr
 ```
 
-The mini organizer creates a detailed report in `.github/reports/` showing all changes made.
+The mini organizer creates a detailed report in `config/.github/reports/` showing all changes made.
 
 ---
 

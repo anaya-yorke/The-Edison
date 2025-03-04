@@ -43,10 +43,10 @@ const readline = require('readline');
 const os = require('os');
 
 // Configuration
-const PROJECT_ROOT = path.resolve(__dirname, '../..');
+const PROJECT_ROOT = path.resolve(__dirname, '../../..');
 const SCRIPTS_DIR = path.resolve(__dirname);
-const REPORT_DIR = path.join(PROJECT_ROOT, '.github/reports');
-const STATE_FILE = path.join(PROJECT_ROOT, '.github/.edison-agent-state.json');
+const REPORT_DIR = path.join(PROJECT_ROOT, 'config/.github/reports');
+const STATE_FILE = path.join(PROJECT_ROOT, 'config/.github/.edison-agent-state.json');
 
 // Import utilities
 const { ensureDirectoryExists } = require('./utils');
