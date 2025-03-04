@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
 
+// Type helper for CSS properties
+type CSSPropertiesWithExtras = React.CSSProperties & {
+  [key: string]: any;
+};
+
 // Pastel Theme Colors
 const pastelColors = {
   blush: '#ffb6c1',
@@ -13,6 +18,15 @@ const pastelColors = {
   honeydew: '#f0fff0',
   powder: '#b0e0e6',
 };
+
+// Create a type from the keys of pastelColors
+type PastelColor = keyof typeof pastelColors;
+
+// Define interfaces for theme-related props
+interface ThemeProps {
+  currentTheme: PastelColor;
+  setTheme: (theme: PastelColor) => void;
+}
 
 // Design System Constants
 const designSystem = {
@@ -73,13 +87,13 @@ const Sticker = ({ emoji, size = 36, rotation, onClick }: { emoji: string, size?
 };
 
 // Badge Component
-const Badge = ({ label, color, icon }) => {
-  const badgeStyle = {
+const Badge = ({ label, color = 'lavender', icon }: { label: string, color?: PastelColor, icon?: React.ReactNode }) => {
+  const badgeStyle: React.CSSProperties = {
     display: 'inline-flex',
     alignItems: 'center',
     gap: '4px',
     padding: '2px 8px',
-    backgroundColor: pastelColors[color] || pastelColors.lavender,
+    backgroundColor: pastelColors[color],
     color: '#333',
     borderRadius: designSystem.borderRadius.full,
     fontSize: '12px',
@@ -95,12 +109,12 @@ const Badge = ({ label, color, icon }) => {
 };
 
 // App Container Component
-const AppContainer = () => {
-  const [currentTheme, setCurrentTheme] = useState('lavender');
-  const [selectedStickers, setSelectedStickers] = useState(['✨', '📚']);
+const AppContainer: React.FC = () => {
+  const [currentTheme, setCurrentTheme] = useState<PastelColor>('lavender');
+  const [selectedStickers, setSelectedStickers] = useState<string[]>(['✨', '📚']);
   const [showStickerPicker, setShowStickerPicker] = useState(false);
 
-  const containerStyle = {
+  const containerStyle: React.CSSProperties = {
     maxWidth: '1200px',
     margin: '0 auto',
     padding: designSystem.spacing[4],
@@ -112,13 +126,13 @@ const AppContainer = () => {
     gap: designSystem.spacing[3],
   };
   
-  const addSticker = (emoji) => {
+  const addSticker = (emoji: string) => {
     setSelectedStickers([...selectedStickers, emoji]);
     setShowStickerPicker(false);
   };
   
   // Get random position for stickers
-  const getStickerPosition = (index) => {
+  const getStickerPosition = (index: number): React.CSSProperties => {
     // Areas where stickers can appear
     const positions = [
       { top: '70px', right: '180px' }, // Near header
@@ -168,8 +182,8 @@ const AppContainer = () => {
 };
 
 // Header Component
-const Header = ({ currentTheme, setTheme }) => {
-  const headerStyle = {
+const Header: React.FC<ThemeProps> = ({ currentTheme, setTheme }) => {
+  const headerStyle: React.CSSProperties = {
     backgroundColor: pastelColors[currentTheme],
     borderRadius: designSystem.borderRadius.lg,
     padding: designSystem.spacing[4],
@@ -179,7 +193,7 @@ const Header = ({ currentTheme, setTheme }) => {
     position: 'relative',
   };
   
-  const titleStyle = {
+  const titleStyle: React.CSSProperties = {
     color: '#333',
     fontSize: '28px',
     fontWeight: '600',
@@ -198,7 +212,7 @@ const Header = ({ currentTheme, setTheme }) => {
 };
 
 // Theme Selector Component
-const ThemeSelector = ({ currentTheme, setTheme }) => {
+const ThemeSelector: React.FC<ThemeProps> = ({ currentTheme, setTheme }) => {
   const [isOpen, setIsOpen] = useState(false);
   
   const selectorStyle = {
@@ -214,7 +228,7 @@ const ThemeSelector = ({ currentTheme, setTheme }) => {
     cursor: 'pointer',
   };
   
-  const dropdownStyle = {
+  const dropdownStyle: React.CSSProperties = {
     position: 'absolute',
     top: '100%',
     right: '0',
@@ -230,7 +244,7 @@ const ThemeSelector = ({ currentTheme, setTheme }) => {
     zIndex: 100,
   };
   
-  const colorOptionStyle = (color) => ({
+  const colorOptionStyle = (color: PastelColor): React.CSSProperties => ({
     width: '24px',
     height: '24px',
     borderRadius: designSystem.borderRadius.full,
@@ -239,7 +253,7 @@ const ThemeSelector = ({ currentTheme, setTheme }) => {
     cursor: 'pointer',
   });
   
-  const handleColorSelect = (color) => {
+  const handleColorSelect = (color: PastelColor) => {
     setTheme(color);
     setIsOpen(false);
   };
@@ -256,8 +270,8 @@ const ThemeSelector = ({ currentTheme, setTheme }) => {
           {Object.keys(pastelColors).map(color => (
             <div
               key={color}
-              style={colorOptionStyle(color)}
-              onClick={() => handleColorSelect(color)}
+              style={colorOptionStyle(color as PastelColor)}
+              onClick={() => handleColorSelect(color as PastelColor)}
               title={color}
             />
           ))}
@@ -268,10 +282,10 @@ const ThemeSelector = ({ currentTheme, setTheme }) => {
 };
 
 // Theme Toggle Component
-const ThemeToggle = () => {
+const ThemeToggle: React.FC = () => {
   const [isLight, setIsLight] = useState(true);
   
-  const toggleContainerStyle = {
+  const toggleContainerStyle: React.CSSProperties = {
     display: 'flex',
     alignItems: 'center',
     backgroundColor: 'rgba(255,255,255,0.2)',
@@ -279,13 +293,13 @@ const ThemeToggle = () => {
     padding: '4px',
   };
   
-  const toggleTextStyle = {
+  const toggleTextStyle: React.CSSProperties = {
     color: '#333',
     fontSize: '14px',
     padding: '0 8px',
   };
   
-  const toggleButtonStyle = {
+  const toggleButtonStyle: React.CSSProperties = {
     width: '28px',
     height: '28px',
     borderRadius: '50%',
@@ -303,9 +317,15 @@ const ThemeToggle = () => {
   );
 };
 
+// Define StickerPicker props
+interface StickerPickerProps {
+  onSelect: (emoji: string) => void;
+  onClose: () => void;
+}
+
 // Sticker Picker Component
-const StickerPicker = ({ onSelect, onClose }) => {
-  const overlayStyle = {
+const StickerPicker: React.FC<StickerPickerProps> = ({ onSelect, onClose }) => {
+  const overlayStyle: React.CSSProperties = {
     position: 'fixed',
     top: 0,
     left: 0,
@@ -318,7 +338,7 @@ const StickerPicker = ({ onSelect, onClose }) => {
     zIndex: 1000,
   };
   
-  const pickerStyle = {
+  const pickerStyle: React.CSSProperties = {
     backgroundColor: 'white',
     borderRadius: designSystem.borderRadius.lg,
     padding: designSystem.spacing[3],
@@ -326,27 +346,27 @@ const StickerPicker = ({ onSelect, onClose }) => {
     boxShadow: designSystem.shadows.md,
   };
   
-  const titleStyle = {
+  const titleStyle: CSSPropertiesWithExtras = {
     margin: '0 0 16px 0',
     fontSize: '18px',
     fontWeight: '600',
   };
   
-  const stickerGridStyle = {
+  const stickerGridStyle: CSSPropertiesWithExtras = {
     display: 'grid',
     gridTemplateColumns: 'repeat(6, 1fr)',
     gap: '12px',
   };
   
-  const stickerStyle = {
+  const stickerStyle: CSSPropertiesWithExtras = {
     fontSize: '24px',
     cursor: 'pointer',
     textAlign: 'center',
     userSelect: 'none',
-    transition: 'transform 0.2s',
+    transition: '0.2s',
     ':hover': {
       transform: 'scale(1.2)',
-    }
+    },
   };
   
   // Common emoji stickers
@@ -377,8 +397,31 @@ const StickerPicker = ({ onSelect, onClose }) => {
   );
 };
 
+// Define more component interfaces
+interface MainContentProps {
+  currentTheme: PastelColor;
+  onAddSticker: (emoji: string) => void;
+}
+
+interface TabNavigationProps {
+  currentTheme: PastelColor;
+}
+
+interface TwoColumnLayoutProps {
+  currentTheme: PastelColor;
+  children: React.ReactNode;
+}
+
+interface SectionProps {
+  currentTheme: PastelColor;
+}
+
+interface FormatSectionProps extends SectionProps {
+  onAddSticker: (emoji: string) => void;
+}
+
 // Main Content Component
-const MainContent = ({ currentTheme, onAddSticker }) => {
+const MainContent: React.FC<MainContentProps> = ({ currentTheme, onAddSticker }) => {
   return (
     <main>
       <TabNavigation currentTheme={currentTheme} />
@@ -392,16 +435,16 @@ const MainContent = ({ currentTheme, onAddSticker }) => {
 };
 
 // Tab Navigation Component
-const TabNavigation = ({ currentTheme }) => {
+const TabNavigation: React.FC<TabNavigationProps> = ({ currentTheme }) => {
   const [activeTab, setActiveTab] = useState('format');
   
-  const tabContainerStyle = {
+  const tabContainerStyle: React.CSSProperties = {
     display: 'flex',
     gap: designSystem.spacing[2],
     marginBottom: designSystem.spacing[4],
   };
   
-  const tabStyle = (isActive) => ({
+  const tabStyle = (isActive: boolean): React.CSSProperties => ({
     padding: `${designSystem.spacing[2]} ${designSystem.spacing[4]}`,
     borderRadius: designSystem.borderRadius.md,
     backgroundColor: isActive ? pastelColors[currentTheme] : designSystem.colors.surface,
@@ -410,7 +453,6 @@ const TabNavigation = ({ currentTheme }) => {
     cursor: 'pointer',
     border: 'none',
     fontSize: '16px',
-    boxShadow: isActive ? 'none' : designSystem.shadows.sm,
   });
   
   return (
@@ -432,19 +474,31 @@ const TabNavigation = ({ currentTheme }) => {
 };
 
 // Two Column Layout Component
-const TwoColumnLayout = ({ children, currentTheme }) => {
-  const layoutStyle = {
+const TwoColumnLayout: React.FC<TwoColumnLayoutProps> = ({ children, currentTheme }) => {
+  const layoutStyle: React.CSSProperties = {
     display: 'grid',
-    gridTemplateColumns: '8fr 5fr', // Golden ratio approximation
-    gap: designSystem.spacing[5],
+    gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
+    gap: designSystem.spacing[4],
+    marginBottom: designSystem.spacing[4],
   };
   
-  return <div style={layoutStyle}>{children}</div>;
+  return (
+    <div style={layoutStyle}>
+      {children}
+    </div>
+  );
 };
 
 // Card Component
-const Card = ({ children, title, currentTheme, badges = [] }) => {
-  const cardStyle = {
+interface CardProps {
+  children: React.ReactNode;
+  title: string;
+  currentTheme: PastelColor;
+  badges?: Array<{label: string, color?: PastelColor, icon?: React.ReactNode}>;
+}
+
+const Card: React.FC<CardProps> = ({ children, title, currentTheme, badges = [] }) => {
+  const cardStyle: CSSPropertiesWithExtras = {
     backgroundColor: designSystem.colors.surface,
     borderRadius: designSystem.borderRadius.lg,
     padding: designSystem.spacing[4],
@@ -495,38 +549,39 @@ const Card = ({ children, title, currentTheme, badges = [] }) => {
 };
 
 // Document Section Component
-const DocumentSection = ({ currentTheme }) => {
-  const dropZoneStyle = {
+const DocumentSection: React.FC<SectionProps> = ({ currentTheme }) => {
+  const dropZoneStyle: React.CSSProperties = {
     border: `2px dashed ${pastelColors[currentTheme]}`,
     borderRadius: designSystem.borderRadius.md,
     padding: designSystem.spacing[4],
-    minHeight: '300px',
+    minHeight: '250px',
     display: 'flex',
-    flexDirection: 'column',
+    flexDirection: 'column' as 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: '#f8fafc',
     gap: designSystem.spacing[2],
-    textAlign: 'center',
+    textAlign: 'center' as 'center',
   };
   
-  const placeholderLineStyle = {
-    height: '1px',
+  const placeholderLineStyle: React.CSSProperties = {
+    width: '90%',
+    height: '8px',
     backgroundColor: '#e2e8f0',
-    width: '100%',
-    margin: `${designSystem.spacing[2]} 0`,
+    borderRadius: '4px',
+    marginBottom: '6px',
   };
   
-  const uploadButtonStyle = {
+  const uploadButtonStyle: React.CSSProperties = {
     display: 'flex',
     alignItems: 'center',
-    gap: designSystem.spacing[1],
-    padding: `${designSystem.spacing[1]} ${designSystem.spacing[3]}`,
+    gap: designSystem.spacing[2],
+    padding: `${designSystem.spacing[2]} ${designSystem.spacing[4]}`,
+    backgroundColor: pastelColors[currentTheme],
+    border: 'none',
     borderRadius: designSystem.borderRadius.md,
-    border: `1px solid #e2e8f0`,
-    backgroundColor: 'white',
-    color: '#64748b',
-    fontSize: '14px',
+    color: '#333',
+    fontWeight: 500,
     cursor: 'pointer',
     marginTop: designSystem.spacing[2],
   };
@@ -557,7 +612,7 @@ const DocumentSection = ({ currentTheme }) => {
 };
 
 // Upload Icon Component
-const UploadIcon = () => (
+const UploadIcon: React.FC = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
     <polyline points="17 8 12 3 7 8" />
@@ -566,12 +621,12 @@ const UploadIcon = () => (
 );
 
 // Format Section Component
-const FormatSection = ({ currentTheme, onAddSticker }) => {
+const FormatSection: React.FC<FormatSectionProps> = ({ currentTheme, onAddSticker }) => {
   const [selectedFormat, setSelectedFormat] = useState('mla');
   const [mathPrecision, setMathPrecision] = useState(true);
   const [smartCitations, setSmartCitations] = useState(false);
   
-  const optionStyle = (isSelected) => ({
+  const optionStyle = (isSelected: boolean): React.CSSProperties => ({
     display: 'flex',
     alignItems: 'center',
     padding: designSystem.spacing[2],
@@ -581,7 +636,7 @@ const FormatSection = ({ currentTheme, onAddSticker }) => {
     marginBottom: designSystem.spacing[2],
   });
   
-  const radioStyle = (isSelected) => ({
+  const radioStyle = (isSelected: boolean): React.CSSProperties => ({
     width: '16px',
     height: '16px',
     borderRadius: '50%',
@@ -607,7 +662,7 @@ const FormatSection = ({ currentTheme, onAddSticker }) => {
     padding: `${designSystem.spacing[1]} 0`,
   };
   
-  const toggleStyle = (isActive) => ({
+  const toggleStyle = (isActive: boolean): React.CSSProperties => ({
     width: '40px',
     height: '24px',
     backgroundColor: isActive ? pastelColors[currentTheme] : '#e2e8f0',
@@ -617,7 +672,7 @@ const FormatSection = ({ currentTheme, onAddSticker }) => {
     transition: '0.3s',
   });
   
-  const toggleKnobStyle = (isActive) => ({
+  const toggleKnobStyle = (isActive: boolean): React.CSSProperties => ({
     width: '18px',
     height: '18px',
     backgroundColor: 'white',
@@ -628,7 +683,7 @@ const FormatSection = ({ currentTheme, onAddSticker }) => {
     transition: '0.3s',
   });
   
-  const buttonStyle = (isPrimary) => ({
+  const buttonStyle = (isPrimary: boolean): React.CSSProperties => ({
     padding: `${designSystem.spacing[2]} ${designSystem.spacing[3]}`,
     backgroundColor: isPrimary ? pastelColors[currentTheme] : 'white',
     color: isPrimary ? '#333' : '#333',

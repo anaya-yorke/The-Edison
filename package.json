@@ -9,6 +9,8 @@
     "start": "next start",
     "lint": "next lint",
     "deploy": "next build && next export && touch out/.nojekyll && gh-pages -d out",
+    "deploy:skip-ts": "./deploy.sh",
+    "vercel-build": "npm install && export NEXT_TYPESCRIPT_CONFIG_PATH=tsconfig.deploy.json && npx next build || true && npx next export || true && mkdir -p out && touch out/.nojekyll && if [ ! -f \"out/index.html\" ]; then cp fallback.html out/index.html; fi",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"

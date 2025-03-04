@@ -1,29 +1,3 @@
-#!/bin/bash
-set -e
-
-echo "Setting up for deployment..."
-
-# Use our custom TypeScript configuration for deployment
-export NEXT_TYPESCRIPT_CONFIG_PATH=tsconfig.deploy.json
-export NODE_ENV=production
-# Turn off TypeScript checking for next.js build
-export NEXT_TYPECHECK=0
-
-# Build and export the Next.js application
-echo "Building and exporting the Next.js application..."
-# Force-ignore TypeScript errors
-npx next build || true
-npx next export || true
-
-# Ensure the out directory exists before creating .nojekyll
-mkdir -p out
-echo "Creating .nojekyll file..."
-touch out/.nojekyll
-
-# Create a simple fallback HTML file in case of build issues
-if [ ! -f "out/index.html" ]; then
-  echo "Creating fallback index.html..."
-  cat > out/index.html << EOL
 <!DOCTYPE html>
 <html>
 <head>
@@ -76,12 +50,4 @@ if [ ! -f "out/index.html" ]; then
   <p>Never struggle with formatting an essay again! The Edison is being deployed with a temporary placeholder page. Please check back soon for the full application.</p>
   <a href="https://github.com/anaya-yorke/The-Edison">View on GitHub</a>
 </body>
-</html>
-EOL
-fi
-
-# Deploy using gh-pages package
-echo "Deploying to GitHub Pages..."
-npx gh-pages -d out
-
-echo "Deployment complete! Your site should be live at https://anaya-yorke.github.io/The-Edison" 
+</html> 
