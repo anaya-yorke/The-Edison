@@ -53,17 +53,18 @@ const { ensureDirectoryExists } = require('./utils');
 
 // Settings
 const DEFAULT_SETTINGS = {
-  dryRun: false,           // Don't apply changes, just report
+  dryRun: true,            // Changed default to true - don't apply changes without explicit approval
   safetyMode: 'safe',      // Safety level: safe, moderate, aggressive
-  createPr: false,         // Create a PR with changes
+  createPr: true,          // Create PR by default instead of direct commits
   targetBranch: '',        // Target branch for changes
-  operation: 'full',       // Default operation
+  operation: 'report',     // Changed default to 'report' instead of 'full'
   quiet: false,            // Suppress most output
   interactive: true,       // Ask for confirmation before making changes
   reportOnly: false,       // Only generate reports, don't make changes
-  autoCommit: true,        // Commit changes automatically
+  autoCommit: false,       // Changed to false - don't commit changes automatically
   yieldToCursor: true,     // Yield to cursor agent if detected
-  memoryLimit: 500,        // Memory limit in MB
+  memoryLimit: 400,        // Reduced memory limit in MB
+  politeMode: true,        // New setting for more respectful messaging
 };
 
 // =================================
@@ -116,7 +117,7 @@ const MemoryManager = {
   // Check if memory usage exceeds limit
   isMemoryExceeded: function(limit) {
     const usage = this.getCurrentMemoryUsage();
-    return usage.rss > limit;
+    return usage.rss > limit * 0.8; // Add 20% buffer to be more conservative
   },
   
   // Try to free memory
@@ -135,10 +136,10 @@ const MemoryManager = {
   startMemoryMonitor: function(limit) {
     const interval = setInterval(() => {
       if (this.isMemoryExceeded(limit)) {
-        console.log(`⚠️ Memory limit of ${limit}MB exceeded! Current usage:`, this.getCurrentMemoryUsage());
+        console.log(`⚠️ Memory approaching limit of ${limit}MB! Current usage:`, this.getCurrentMemoryUsage());
         this.attemptMemoryCleanup();
       }
-    }, 5000); // Check every 5 seconds
+    }, 3000); // Check more frequently - every 3 seconds
     
     return interval;
   },
@@ -148,6 +149,18 @@ const MemoryManager = {
     if (intervalId) {
       clearInterval(intervalId);
     }
+  },
+  
+  // New: Apply data-saving measures
+  applyDataSavingMeasures: function() {
+    // Limit max concurrent operations
+    process.env.MAX_CONCURRENT_OPERATIONS = '2';
+    
+    // Use smaller buffers
+    process.env.NODE_OPTIONS = '--max-old-space-size=256';
+    
+    console.log('Applied data-saving measures');
+    return true;
   }
 };
 
@@ -359,8 +372,15 @@ function commitChanges(message, isDeployment = false) {
 
 // Enhanced runOperation function with permission and memory checks
 async function runOperation(settings) {
+  // Apply data saving measures
+  MemoryManager.applyDataSavingMeasures();
+  
+  // Start memory monitor with reduced limit
+  const memMonitor = MemoryManager.startMemoryMonitor(settings.memoryLimit * 0.8);
+  
   // Check if cursor agent is active before proceeding
   if (!PermissionManager.canPerformAction(settings)) {
+    MemoryManager.stopMemoryMonitor(memMonitor);
     return {
       cursorYield: {
         success: false,
@@ -370,12 +390,9 @@ async function runOperation(settings) {
     };
   }
   
-  // Start memory monitoring
-  const memoryMonitor = MemoryManager.startMemoryMonitor(settings.memoryLimit);
-  
   // Check deployment manager for cooldown periods
   if (!DeploymentManager.canDeploy(settings.operation)) {
-    MemoryManager.stopMemoryMonitor(memoryMonitor);
+    MemoryManager.stopMemoryMonitor(memMonitor);
     return {
       deploymentCooling: {
         success: false,
@@ -451,7 +468,7 @@ async function runOperation(settings) {
     return results;
   } finally {
     // Stop memory monitoring
-    MemoryManager.stopMemoryMonitor(memoryMonitor);
+    MemoryManager.stopMemoryMonitor(memMonitor);
   }
 }
 
@@ -512,4 +529,34 @@ main().catch(error => {
   DeploymentManager.recordDeployment('main', false);
   
   process.exit(1);
-}); 
+});
+
+// Add this function somewhere appropriate, like after parseArguments() function
+function formatMessage(message, settings) {
+  if (settings.politeMode) {
+    // Replace forceful language with more respectful alternatives
+    return message
+      .replace(/automatically (fixed|resolved|detected)/gi, "suggested fixes for")
+      .replace(/fixing|resolving/gi, "addressing")
+      .replace(/detected and fixed/gi, "identified potential issues with")
+      .replace(/^(!|❗)/gi, "Note:")
+      .replace(/must|should|need to/gi, "may want to consider")
+      .replace(/automatically/gi, "as requested");
+  }
+  return message;
+}
+
+// Then find places where the agent outputs messages and wrap them in formatMessage
+// For example, in the log or console.log functions:
+
+// Add this near the top with other utility functions
+const log = (message, settings, level = 'info') => {
+  const formattedMessage = formatMessage(message, settings);
+  if (level === 'error') {
+    console.error(formattedMessage);
+  } else if (level === 'warn') {
+    console.warn(formattedMessage);
+  } else {
+    console.log(formattedMessage);
+  }
+}; 

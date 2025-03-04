@@ -2,7 +2,7 @@ name: Edison Maintenance Agent
 
 on:
   schedule:
-    - cron: '0 2 * * *'  # Run daily at 2 AM
+    - cron: '0 2 * * 1'  # Run weekly on Mondays at 2 AM instead of daily
   workflow_dispatch:
     inputs:
       operation:
@@ -23,7 +23,7 @@ on:
       dry_run:
         description: 'Dry run (no changes)'
         required: false
-        default: false
+        default: true
         type: boolean
       safety:
         description: 'Safety level for updates'
@@ -34,6 +34,11 @@ on:
           - safe
           - moderate
           - aggressive
+      skip_if_recent:
+        description: 'Skip if run recently (within 7 days)'
+        required: false
+        default: true
+        type: boolean
   pull_request:
     types: [opened, synchronize]
     paths-ignore:
@@ -42,8 +47,33 @@ on:
       - main
 
 jobs:
+  pre-check:
+    runs-on: ubuntu-latest
+    outputs:
+      should_run: ${{ steps.check.outputs.should_run }}
+    steps:
+      - id: check
+        if: github.event_name == 'schedule' && github.event.inputs.skip_if_recent == 'true'
+        run: |
+          LAST_RUN=$(curl -s https://api.github.com/repos/${{ github.repository }}/actions/workflows/edison-agent.yml/runs?status=completed&per_page=1 | jq -r '.workflow_runs[0].created_at')
+          if [[ -z "$LAST_RUN" ]]; then
+            echo "::set-output name=should_run::true"
+          else
+            LAST_RUN_SECONDS=$(date -d "$LAST_RUN" +%s)
+            NOW_SECONDS=$(date +%s)
+            DIFF_DAYS=$(( ($NOW_SECONDS - $LAST_RUN_SECONDS) / 86400 ))
+            if [[ $DIFF_DAYS -ge 7 ]]; then
+              echo "::set-output name=should_run::true"
+            else
+              echo "::set-output name=should_run::false"
+              echo "Skipping run, last execution was $DIFF_DAYS days ago"
+            fi
+          fi
+        shell: bash
+
   auto-update:
-    if: github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'agent-review')
+    needs: pre-check
+    if: (github.event_name != 'schedule' || needs.pre-check.outputs.should_run == 'true') && (github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'agent-review'))
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -104,8 +134,8 @@ jobs:
         uses: peter-evans/create-pull-request@v4
         with:
           commit-message: "refactor: organize code structure"
-          title: "🧹 Code Organization"
-          body: "The Edison Agent has detected opportunities to improve the code organization and structure."
+          title: "🧹 Code Organization Suggestions"
+          body: "The Edison Agent has identified some potential improvements to the code organization and structure."
           branch: "agent-code-organization"
           labels: "code-structure,automated"
 
@@ -139,9 +169,9 @@ jobs:
       - name: Create PR for code quality fixes
         uses: peter-evans/create-pull-request@v4
         with:
-          commit-message: "fix: automatic code quality improvements"
-          title: "🔧 Code Quality Improvements"
-          body: "The Edison Agent has automatically fixed code quality issues."
+          commit-message: "fix: code quality improvements"
+          title: "🔧 Code Quality Suggestions"
+          body: "The Edison Agent has identified some potential code quality improvements for your consideration."
           branch: "agent-code-quality"
           labels: "code-quality,automated"
 
@@ -175,9 +205,9 @@ jobs:
       - name: Create PR for UI improvements
         uses: peter-evans/create-pull-request@v4
         with:
-          commit-message: "style: automatic UI improvements"
-          title: "✨ UI Enhancements"
-          body: "The Edison Agent has automatically improved UI consistency, accessibility, and responsive design."
+          commit-message: "style: UI improvements"
+          title: "✨ UI Enhancement Suggestions"
+          body: "The Edison Agent has identified potential improvements for UI consistency, accessibility, and responsive design."
           branch: "agent-ui-improvements"
           labels: "ui,automated"
 
@@ -212,8 +242,8 @@ jobs:
         uses: peter-evans/create-pull-request@v4
         with:
           commit-message: "chore: file system cleanup"
-          title: "🗑️ File Cleanup"
-          body: "The Edison Agent has removed duplicate and unused files, and reorganized the file structure."
+          title: "🗑️ File Cleanup Suggestions"
+          body: "The Edison Agent has identified potential duplicate and unused files that might be candidates for cleanup."
           branch: "agent-file-cleanup"
           labels: "cleanup,automated"
 
@@ -247,9 +277,9 @@ jobs:
       - name: Create PR for bug fixes
         uses: peter-evans/create-pull-request@v4
         with:
-          commit-message: "fix: automatic bug fixes"
-          title: "🐛 Bug Fixes"
-          body: "The Edison Agent has automatically detected and fixed bugs."
+          commit-message: "fix: suggested bug fixes"
+          title: "🐛 Potential Bug Fix Suggestions"
+          body: "The Edison Agent has identified some potential issues that might need addressing."
           branch: "agent-bug-fixes"
           labels: "bug,automated"
 
@@ -286,18 +316,18 @@ jobs:
         if: steps.git-check.outputs.changes == 'true'
         uses: peter-evans/create-pull-request@v5
         with:
-          title: 'Fix: Automated Vercel deployment fixes'
-          commit-message: 'Fix: Automated Vercel deployment fixes'
+          title: 'Fix: Suggested Vercel deployment improvements'
+          commit-message: 'Fix: Suggested Vercel deployment improvements'
           branch: auto-deployment-fixes
           delete-branch: true
           body: |
-            This PR contains automated fixes for Vercel deployment issues.
+            This PR contains suggested fixes for potential Vercel deployment issues.
             
-            Changes:
-            - Fixed deployment configuration issues
-            - Updated incompatible dependencies
-            - Resolved memory limitation problems
-            - Adjusted build settings for better compatibility
+            Suggestions:
+            - Possible deployment configuration adjustments
+            - Dependency compatibility recommendations
+            - Memory optimization suggestions
+            - Build setting considerations for better compatibility
       
       - name: Upload deployment fix report
         if: always()
@@ -336,21 +366,21 @@ jobs:
         if: steps.git-check.outputs.changes == 'true'
         uses: peter-evans/create-pull-request@v5
         with:
-          title: 'Refactor: Deep code reorganization'
-          commit-message: 'Refactor: Deep code reorganization by Mini Organizer'
+          title: 'Refactor: Proposed code organization suggestions'
+          commit-message: 'Refactor: Proposed code organization by Mini Organizer'
           branch: deep-code-restructuring
           delete-branch: true
           body: |
-            This PR contains a deep restructuring of the codebase for optimal organization.
+            This PR contains suggestions for potential code organization improvements.
             
-            Changes:
-            - Moved files to optimal locations based on their function
-            - Created proper directory structure for components, utilities, hooks, etc.
-            - Created index files for clean imports
-            - Updated import paths throughout the codebase
-            - Removed unused files
+            Suggestions:
+            - File location optimizations based on function
+            - Directory structure recommendations for components, utilities, hooks, etc.
+            - Index file creation for cleaner imports
+            - Import path updates
+            - Identification of potentially unused files
             
-            Please review the changes carefully as this is a significant code reorganization.
+            Please review these suggestions at your convenience and feel free to reject, modify, or accept them as you see fit.
       
       - name: Upload mini organizer report
         if: always()
