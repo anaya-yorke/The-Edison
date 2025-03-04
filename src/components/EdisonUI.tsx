@@ -49,7 +49,7 @@ const Sticker = ({ emoji, size = 36, rotation, onClick }: { emoji: string, size?
   const [isHovered, setIsHovered] = useState(false);
   const randomRotation = rotation || Math.floor(Math.random() * 16) - 8;
   
-  const stickerStyle = {
+  const stickerStyle: React.CSSProperties = {
     position: 'absolute',
     fontSize: `${size}px`,
     transform: `rotate(${randomRotation}deg) ${isHovered ? 'scale(1.1)' : 'scale(1)'}`,
