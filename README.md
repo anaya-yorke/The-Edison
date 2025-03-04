@@ -43,6 +43,7 @@ The Edison Agent is an advanced automation system built into our project that he
 - **Bug Detection & Fixing**: Identifies and fixes common code issues
 - **UI Consistency**: Ensures a consistent UI design across components
 - **File Cleanup**: Detects and removes unused and duplicate files
+- **Auto-Update**: Keeps dependencies and formatting standards up-to-date
 
 #### How to Use the Edison Agent
 
@@ -57,6 +58,7 @@ node .github/scripts/edison-agent.js organize   # Code organization
 node .github/scripts/edison-agent.js fix        # Bug detection and fixing
 node .github/scripts/edison-agent.js ui         # UI consistency
 node .github/scripts/edison-agent.js cleanup    # File cleanup
+node .github/scripts/edison-agent.js update     # Update dependencies and formats
 node .github/scripts/edison-agent.js report     # Generate report without changes
 
 # Common flags
@@ -64,9 +66,34 @@ node .github/scripts/edison-agent.js report     # Generate report without change
 --safety=safe              # Safety level (safe, moderate, aggressive)
 --pr                       # Create a pull request with changes
 --branch=feature-branch    # Create changes on a specific branch
+--no-commit                # Skip committing changes
 ```
 
 The agent runs with safe defaults but can be adjusted for more aggressive automation using the safety level settings.
+
+#### Auto-Update Feature
+
+The Auto-Update feature ensures that The Edison stays current with:
+
+- **Package Dependencies**: Updates npm packages to their latest compatible versions
+- **Citation Formats**: Updates citation styles with the latest formatting rules
+- **UI Components**: Keeps UI designs consistent with the design system
+- **Design Standards**: Automatically applies design system changes to CSS variables
+
+The auto-update operation backs up files before making changes and can be safely run with:
+
+```bash
+# Safe mode (minor and patch updates only)
+node .github/scripts/edison-agent.js update
+
+# Moderate mode (interactive updates)
+node .github/scripts/edison-agent.js update --safety=moderate
+
+# Aggressive mode (all updates including major versions)
+node .github/scripts/edison-agent.js update --safety=aggressive
+```
+
+Each update run generates a detailed report in `.github/reports/` for review.
 
 ---
 

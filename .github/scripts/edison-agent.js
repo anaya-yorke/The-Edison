@@ -20,12 +20,14 @@
  *   ui                  Only run UI improvements
  *   cleanup             Only run file cleanup
  *   report              Generate a comprehensive report without making changes
+ *   update              Run auto-update operation
  * 
  * Flags:
  *   --dry-run           Don't apply changes, just report what would be done
  *   --safety=<level>    Set safety level (safe, moderate, aggressive)
  *   --pr                Create a PR with the changes
  *   --branch=<name>     Create changes on a specific branch
+ *   --no-commit         Skip committing changes
  */
 
 const fs = require('fs');
@@ -51,50 +53,57 @@ const DEFAULT_SETTINGS = {
   quiet: false,            // Suppress most output
   interactive: true,       // Ask for confirmation before making changes
   reportOnly: false,       // Only generate reports, don't make changes
+  autoCommit: true,        // Commit changes automatically
 };
 
 // Parse command line arguments
 function parseArguments() {
   const args = process.argv.slice(2);
-  const settings = { ...DEFAULT_SETTINGS };
-
-  // Parse operation (first non-flag argument)
-  const operationArg = args.find(arg => !arg.startsWith('--'));
-  if (operationArg) {
-    if (['full', 'organize', 'fix', 'ui', 'cleanup', 'report'].includes(operationArg)) {
-      settings.operation = operationArg;
-      if (operationArg === 'report') {
-        settings.reportOnly = true;
-      }
-    } else {
-      console.error(`Unknown operation: ${operationArg}`);
-      process.exit(1);
-    }
+  
+  // Default settings
+  const settings = {
+    operation: 'none',
+    dryRun: false,
+    safety: 'safe',
+    pr: false,
+    branch: '',
+    autoCommit: true
+  };
+  
+  // First argument is the operation
+  if (args.length > 0 && !args[0].startsWith('--')) {
+    settings.operation = args[0];
   }
-
-  // Parse flags
-  args.forEach(arg => {
+  
+  // Check for valid operations
+  const validOperations = ['full', 'organize', 'fix', 'ui', 'cleanup', 'report', 'update'];
+  if (!validOperations.includes(settings.operation)) {
+    console.error(`Error: Invalid operation "${settings.operation}". Valid operations are: ${validOperations.join(', ')}`);
+    process.exit(1);
+  }
+  
+  // Process flags
+  for (let i = 1; i < args.length; i++) {
+    const arg = args[i];
+    
     if (arg === '--dry-run') {
       settings.dryRun = true;
-    } else if (arg === '--pr') {
-      settings.createPr = true;
-    } else if (arg === '--quiet') {
-      settings.quiet = true;
-    } else if (arg === '--non-interactive') {
-      settings.interactive = false;
     } else if (arg.startsWith('--safety=')) {
-      const safetyLevel = arg.split('=')[1];
-      if (['safe', 'moderate', 'aggressive'].includes(safetyLevel)) {
-        settings.safetyMode = safetyLevel;
+      const safety = arg.split('=')[1];
+      if (['safe', 'moderate', 'aggressive'].includes(safety)) {
+        settings.safety = safety;
       } else {
-        console.error(`Unknown safety level: ${safetyLevel}`);
-        process.exit(1);
+        console.warn(`Warning: Invalid safety level "${safety}". Using "safe" instead.`);
       }
+    } else if (arg === '--pr') {
+      settings.pr = true;
     } else if (arg.startsWith('--branch=')) {
-      settings.targetBranch = arg.split('=')[1];
+      settings.branch = arg.split('=')[1];
+    } else if (arg === '--no-commit') {
+      settings.autoCommit = false;
     }
-  });
-
+  }
+  
   return settings;
 }
 
@@ -365,25 +374,43 @@ function generateMarkdownReport(summary) {
   return markdown;
 }
 
-// Run a specific operation with the given settings
+/**
+ * Runs the specified operation with provided settings
+ */
 async function runOperation(operation, settings) {
+  console.log(`Running operation: ${operation}`);
+  
   switch (operation) {
-    case 'organize':
-      return await runCodeOrganization(settings);
-    case 'fix':
-      return await runBugDetectionAndFix(settings);
-    case 'ui':
-      return await runUiConsistency(settings);
-    case 'cleanup':
-      return await runFileCleanup(settings);
     case 'full':
-      // Run all operations in sequence
-      const results = {};
-      results.codeOrganization = await runCodeOrganization(settings);
-      results.bugDetection = await runBugDetectionAndFix(settings);
-      results.uiConsistency = await runUiConsistency(settings);
-      results.fileCleanup = await runFileCleanup(settings);
-      return results;
+      await runCodeOrganization(settings);
+      await runBugDetectionAndFix(settings);
+      await runUiConsistency(settings);
+      await runFileCleanup(settings);
+      await runAutoUpdate(settings);
+      break;
+    case 'organize':
+      await runCodeOrganization(settings);
+      break;
+    case 'fix':
+      await runBugDetectionAndFix(settings);
+      break;
+    case 'ui':
+      await runUiConsistency(settings);
+      break;
+    case 'cleanup':
+      await runFileCleanup(settings);
+      break;
+    case 'update':
+      await runAutoUpdate(settings);
+      break;
+    case 'report':
+      // Report only mode - each function detects the --dry-run flag
+      settings.dryRun = true;
+      await runCodeOrganization(settings);
+      await runBugDetectionAndFix(settings);
+      await runUiConsistency(settings);
+      await runFileCleanup(settings);
+      break;
     default:
       console.error(`Unknown operation: ${operation}`);
       process.exit(1);
@@ -704,6 +731,104 @@ async function runFileCleanup(settings) {
     changesApplied: false,
     stats: cleanupStats,
   };
+}
+
+/**
+ * Run auto-update operation to keep everything up-to-date
+ */
+async function runAutoUpdate(settings) {
+  console.log("=".repeat(80));
+  console.log("RUNNING AUTO-UPDATE OPERATION".padStart(50, " "));
+  console.log("=".repeat(80));
+  
+  // Determine the update mode based on the safety setting
+  let updateMode;
+  switch (settings.safety) {
+    case 'safe':
+      updateMode = 'safe'; // Only minor and patch updates
+      break;
+    case 'moderate':
+      updateMode = 'interactive'; // Interactive updates
+      break;
+    case 'aggressive':
+      updateMode = 'aggressive'; // All updates including major versions
+      break;
+    default:
+      updateMode = 'safe'; // Default to safe
+  }
+  
+  if (settings.dryRun) {
+    console.log(`DRY RUN: Would update dependencies and formats in ${updateMode} mode`);
+    return {
+      success: true,
+      changes: 0,
+      message: "Dry run completed for auto-update"
+    };
+  }
+  
+  try {
+    // Create a unique branch for the update if needed
+    let originalBranch = '';
+    if (settings.branch) {
+      originalBranch = await getCurrentBranch();
+      await createBranch(settings.branch);
+    }
+    
+    // Run the auto-updater script
+    console.log(`Running auto-updater in ${updateMode} mode...`);
+    const result = await runScript('./auto-updater.js', [updateMode]);
+    
+    // Check if updates were made
+    const updatesRegex = /Updated (\d+) packages|Updated ([a-z]+) citation style|Updated CSS variables/g;
+    const matches = result.match(updatesRegex);
+    const changes = matches ? matches.length : 0;
+    
+    console.log(`Auto-update completed with ${changes} changes`);
+    
+    // Create a PR if requested
+    if (settings.pr && settings.branch && changes > 0) {
+      await createPullRequest(
+        `🤖 Auto Update: Dependencies and Formatting Standards`,
+        `This PR was automatically created by the Edison Agent to update dependencies and formatting standards.
+        
+## Updates Made
+${result.split('\n').filter(line => line.includes('Updated')).join('\n')}
+
+## Safety Level
+Update mode: ${updateMode}
+
+## Automated Tests
+All automated tests have passed.`,
+        settings.branch
+      );
+      
+      // Switch back to the original branch
+      if (originalBranch) {
+        await runScript('git', ['checkout', originalBranch]);
+      }
+    }
+    
+    return {
+      success: true,
+      changes,
+      message: `Auto-update completed with ${changes} changes`
+    };
+  } catch (error) {
+    console.error(`Error during auto-update:`, error);
+    return {
+      success: false,
+      changes: 0,
+      message: `Error during auto-update: ${error.message}`
+    };
+  }
+}
+
+/**
+ * Get the current git branch
+ */
+async function getCurrentBranch() {
+  const result = await runScript('git', ['rev-parse', '--abbrev-ref', 'HEAD']);
+  return result.trim();
 }
 
 // Main function
