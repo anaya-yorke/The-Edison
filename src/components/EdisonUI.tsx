@@ -45,7 +45,7 @@ const designSystem = {
 };
 
 // Sticker Component
-const Sticker = ({ emoji, size = 36, rotation, onClick }) => {
+const Sticker = ({ emoji, size = 36, rotation, onClick }: { emoji: string, size?: number, rotation?: number, onClick?: () => void }) => {
   const [isHovered, setIsHovered] = useState(false);
   const randomRotation = rotation || Math.floor(Math.random() * 16) - 8;
   

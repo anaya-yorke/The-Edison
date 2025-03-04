@@ -44,4 +44,4 @@ Visit `http://localhost:3000` in your browser to start using The Edison.
 
 ---
 
-Made with ❤️ for students who just want to focus on their writing without the formatting headache.
+Made with love for students who just want to focus on their writing without the formatting headache.
