@@ -35,65 +35,115 @@ Well, meet The Edison - a formatting tool that formats your essays perfectly in 
 
 ### Edison Agent
 
-The Edison Agent is an advanced automation system built into our project that helps maintain code quality and organization. This system includes:
+Edison Agent is an advanced automation tool that maintains the codebase with minimal human intervention. It handles routine maintenance tasks and can help keep the code healthy and up-to-date.
 
 #### Automated Maintenance
 
-- **Code Organization**: Automatically organizes files and code structure
-- **Bug Detection & Fixing**: Identifies and fixes common code issues
-- **UI Consistency**: Ensures a consistent UI design across components
-- **File Cleanup**: Detects and removes unused and duplicate files
-- **Auto-Update**: Keeps dependencies and formatting standards up-to-date
+- **Code Organization**: Maintains consistent file structure and code formatting.
+- **Bug Detection & Fixing**: Automatically identifies and resolves common code issues.
+- **UI Consistency**: Ensures design consistency across all components.
+- **File Cleanup**: Detects and removes unused files and dead code.
+- **Auto-Update**: Keeps dependencies, citation formats, and UI components up to date.
+- **Deployment Fixer**: Automatically resolves Vercel deployment issues.
+- **Deep Code Restructuring**: Completely reorganizes code into an optimal structure.
 
-#### How to Use the Edison Agent
-
-Run the agent from the `.github/scripts` directory:
+#### Using the Edison Agent
 
 ```bash
-# Full maintenance run
+# Run all maintenance operations
 node .github/scripts/edison-agent.js full
 
-# Only run specific operations
-node .github/scripts/edison-agent.js organize   # Code organization
-node .github/scripts/edison-agent.js fix        # Bug detection and fixing
-node .github/scripts/edison-agent.js ui         # UI consistency
-node .github/scripts/edison-agent.js cleanup    # File cleanup
+# Individual operations
+node .github/scripts/edison-agent.js organize   # Organize code
+node .github/scripts/edison-agent.js fix        # Fix bugs
+node .github/scripts/edison-agent.js ui         # Ensure UI consistency
+node .github/scripts/edison-agent.js cleanup    # Remove unused files
 node .github/scripts/edison-agent.js update     # Update dependencies and formats
-node .github/scripts/edison-agent.js report     # Generate report without changes
+node .github/scripts/edison-agent.js deploy-fix # Fix deployment issues
+node .github/scripts/edison-agent.js restructure # Deep code restructuring
 
-# Common flags
---dry-run                  # Don't apply changes, just report
---safety=safe              # Safety level (safe, moderate, aggressive)
---pr                       # Create a pull request with changes
---branch=feature-branch    # Create changes on a specific branch
---no-commit                # Skip committing changes
+# Generate a report without making changes
+node .github/scripts/edison-agent.js report
+
+# Additional flags
+--dry-run           # Don't apply changes, just report
+--safety safe|moderate|aggressive  # Control update aggressiveness
+--pr                # Create a pull request with changes
+--no-commit         # Skip committing changes
+--target <project>  # Specify Vercel project for deployment fixes
+--verbose           # Show detailed output
 ```
 
-The agent runs with safe defaults but can be adjusted for more aggressive automation using the safety level settings.
+##### Auto-Update Feature
 
-#### Auto-Update Feature
+The auto-update feature keeps your codebase current by:
+- Updating package dependencies to latest compatible versions
+- Updating citation styles and formatting standards
+- Refreshing UI components according to the design system
+- Generating comprehensive update reports in `.github/reports/`
 
-The Auto-Update feature ensures that The Edison stays current with:
-
-- **Package Dependencies**: Updates npm packages to their latest compatible versions
-- **Citation Formats**: Updates citation styles with the latest formatting rules
-- **UI Components**: Keeps UI designs consistent with the design system
-- **Design Standards**: Automatically applies design system changes to CSS variables
-
-The auto-update operation backs up files before making changes and can be safely run with:
-
+Usage examples:
 ```bash
-# Safe mode (minor and patch updates only)
+# Safe update (minimal risk)
 node .github/scripts/edison-agent.js update
 
-# Moderate mode (interactive updates)
-node .github/scripts/edison-agent.js update --safety=moderate
+# Moderate update (balanced approach)
+node .github/scripts/edison-agent.js update --safety moderate
 
-# Aggressive mode (all updates including major versions)
-node .github/scripts/edison-agent.js update --safety=aggressive
+# Aggressive update (latest everything)
+node .github/scripts/edison-agent.js update --safety aggressive
+
+# Create a PR with the updates
+node .github/scripts/edison-agent.js update --pr
+
+# Just check what would be updated without making changes
+node .github/scripts/edison-agent.js update --dry-run
 ```
 
-Each update run generates a detailed report in `.github/reports/` for review.
+##### Deployment Fixer
+
+The deployment fixer automatically resolves common Vercel deployment issues:
+- Analyzes deployment logs to identify failure causes
+- Fixes TypeScript configuration issues
+- Resolves memory limitations
+- Updates Node.js version compatibility
+- Corrects build configuration problems
+
+Usage examples:
+```bash
+# Fix deployment issues
+node .github/scripts/edison-agent.js deploy-fix
+
+# Fix issues for a specific Vercel project
+node .github/scripts/edison-agent.js deploy-fix --target my-project-name
+
+# Generate a report without making changes
+node .github/scripts/edison-agent.js deploy-fix --dry-run
+```
+
+##### Mini Code Organizer
+
+The mini code organizer performs deep restructuring of your codebase:
+- Analyzes the entire codebase for optimal organization
+- Creates a logical folder structure based on code function
+- Moves files to more appropriate locations
+- Updates import statements throughout the codebase
+- Removes unused files and duplicated code
+- Creates index files for cleaner imports
+
+Usage examples:
+```bash
+# Restructure the entire codebase
+node .github/scripts/edison-agent.js restructure
+
+# Generate a report without making changes
+node .github/scripts/edison-agent.js restructure --dry-run
+
+# Restructure and create a pull request
+node .github/scripts/edison-agent.js restructure --pr
+```
+
+The mini organizer creates a detailed report in `.github/reports/` showing all changes made.
 
 ---
 

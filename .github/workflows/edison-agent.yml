@@ -3,10 +3,43 @@ name: Edison Maintenance Agent
 on:
   schedule:
     - cron: '0 2 * * *'  # Run daily at 2 AM
-  workflow_dispatch:  # Allow manual triggering
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: 'Operation to run'
+        required: false
+        default: 'report'
+        type: choice
+        options:
+          - full
+          - organize
+          - fix
+          - ui
+          - cleanup
+          - update
+          - deploy-fix
+          - restructure
+          - report
+      dry_run:
+        description: 'Dry run (no changes)'
+        required: false
+        default: false
+        type: boolean
+      safety:
+        description: 'Safety level for updates'
+        required: false
+        default: 'safe'
+        type: choice
+        options:
+          - safe
+          - moderate
+          - aggressive
   pull_request:
-    types: [labeled]
-    branches: [main]
+    types: [opened, synchronize]
+    paths-ignore:
+      - '**.md'
+    branches:
+      - main
 
 jobs:
   auto-update:
@@ -218,4 +251,111 @@ jobs:
           title: "🐛 Bug Fixes"
           body: "The Edison Agent has automatically detected and fixed bugs."
           branch: "agent-bug-fixes"
-          labels: "bug,automated" 
+          labels: "bug,automated"
+
+  deploy-fix:
+    if: ${{ github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'agent-review') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: |
+          npm ci
+          npm install --no-save @vercel/client node-fetch axios
+      
+      - name: Run deployment fixer
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: node .github/scripts/edison-agent.js deploy-fix ${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }}
+      
+      - name: Check for changes
+        id: git-check
+        run: echo "::set-output name=changes::$(if git status --porcelain | grep .; then echo true; else echo false; fi)"
+      
+      - name: Create Pull Request
+        if: steps.git-check.outputs.changes == 'true'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          title: 'Fix: Automated Vercel deployment fixes'
+          commit-message: 'Fix: Automated Vercel deployment fixes'
+          branch: auto-deployment-fixes
+          delete-branch: true
+          body: |
+            This PR contains automated fixes for Vercel deployment issues.
+            
+            Changes:
+            - Fixed deployment configuration issues
+            - Updated incompatible dependencies
+            - Resolved memory limitation problems
+            - Adjusted build settings for better compatibility
+      
+      - name: Upload deployment fix report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: deployment-fix-report
+          path: .github/reports/deployment-fix-*.md
+          retention-days: 7
+
+  mini-organizer:
+    if: ${{ github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'deep-restructure') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run mini organizer for code restructuring
+        run: node .github/scripts/edison-agent.js restructure ${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }}
+      
+      - name: Check for changes
+        id: git-check
+        run: echo "::set-output name=changes::$(if git status --porcelain | grep .; then echo true; else echo false; fi)"
+      
+      - name: Create Pull Request
+        if: steps.git-check.outputs.changes == 'true'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          title: 'Refactor: Deep code reorganization'
+          commit-message: 'Refactor: Deep code reorganization by Mini Organizer'
+          branch: deep-code-restructuring
+          delete-branch: true
+          body: |
+            This PR contains a deep restructuring of the codebase for optimal organization.
+            
+            Changes:
+            - Moved files to optimal locations based on their function
+            - Created proper directory structure for components, utilities, hooks, etc.
+            - Created index files for clean imports
+            - Updated import paths throughout the codebase
+            - Removed unused files
+            
+            Please review the changes carefully as this is a significant code reorganization.
+      
+      - name: Upload mini organizer report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: mini-organizer-report
+          path: .github/reports/mini-organizer-*.md
+          retention-days: 7 

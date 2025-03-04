@@ -21,6 +21,8 @@
  *   cleanup             Only run file cleanup
  *   report              Generate a comprehensive report without making changes
  *   update              Run auto-update operation
+ *   deploy-fix          Run deployment fixer
+ *   restructure         Run mini organizer
  * 
  * Flags:
  *   --dry-run           Don't apply changes, just report what would be done
@@ -28,6 +30,8 @@
  *   --pr                Create a PR with the changes
  *   --branch=<name>     Create changes on a specific branch
  *   --no-commit         Skip committing changes
+ *   --verbose           Show detailed output
+ *   --target=<project>  Specify a target project for deployment fixes
  */
 
 const fs = require('fs');
@@ -56,51 +60,35 @@ const DEFAULT_SETTINGS = {
   autoCommit: true,        // Commit changes automatically
 };
 
+const validOperations = ['organize', 'fix', 'ui', 'cleanup', 'update', 'deploy-fix', 'restructure', 'full', 'report'];
+
 // Parse command line arguments
 function parseArguments() {
   const args = process.argv.slice(2);
   
   // Default settings
   const settings = {
-    operation: 'none',
-    dryRun: false,
-    safety: 'safe',
-    pr: false,
-    branch: '',
-    autoCommit: true
+    operation: validOperations.includes(args[0]) ? args[0] : 'report',
+    dryRun: args.includes('--dry-run'),
+    verbose: args.includes('--verbose'),
+    autoCommit: !args.includes('--no-commit'),
+    createPR: args.includes('--pr'),
+    safety: 'safe', // default to safe updates
+    target: null
   };
   
-  // First argument is the operation
-  if (args.length > 0 && !args[0].startsWith('--')) {
-    settings.operation = args[0];
+  // If there's a --target flag, get the value after it
+  const targetIndex = args.findIndex(arg => arg === '--target');
+  if (targetIndex !== -1 && args[targetIndex + 1]) {
+    settings.target = args[targetIndex + 1];
   }
   
-  // Check for valid operations
-  const validOperations = ['full', 'organize', 'fix', 'ui', 'cleanup', 'report', 'update'];
-  if (!validOperations.includes(settings.operation)) {
-    console.error(`Error: Invalid operation "${settings.operation}". Valid operations are: ${validOperations.join(', ')}`);
-    process.exit(1);
-  }
-  
-  // Process flags
-  for (let i = 1; i < args.length; i++) {
-    const arg = args[i];
-    
-    if (arg === '--dry-run') {
-      settings.dryRun = true;
-    } else if (arg.startsWith('--safety=')) {
-      const safety = arg.split('=')[1];
-      if (['safe', 'moderate', 'aggressive'].includes(safety)) {
-        settings.safety = safety;
-      } else {
-        console.warn(`Warning: Invalid safety level "${safety}". Using "safe" instead.`);
-      }
-    } else if (arg === '--pr') {
-      settings.pr = true;
-    } else if (arg.startsWith('--branch=')) {
-      settings.branch = arg.split('=')[1];
-    } else if (arg === '--no-commit') {
-      settings.autoCommit = false;
+  // If there's a --safety flag, get the value after it
+  const safetyIndex = args.findIndex(arg => arg === '--safety');
+  if (safetyIndex !== -1 && args[safetyIndex + 1]) {
+    const safetyValue = args[safetyIndex + 1];
+    if (['safe', 'moderate', 'aggressive'].includes(safetyValue)) {
+      settings.safety = safetyValue;
     }
   }
   
@@ -377,48 +365,58 @@ function generateMarkdownReport(summary) {
 /**
  * Runs the specified operation with provided settings
  */
-async function runOperation(operation, settings) {
-  console.log(`Running operation: ${operation}`);
+async function runOperation(settings) {
+  console.log(`Running Edison Agent operation: ${settings.operation}${settings.dryRun ? ' (dry run)' : ''}`);
   
-  switch (operation) {
-    case 'full':
-      await runCodeOrganization(settings);
-      await runBugDetectionAndFix(settings);
-      await runUiConsistency(settings);
-      await runFileCleanup(settings);
-      await runAutoUpdate(settings);
-      break;
+  switch (settings.operation) {
     case 'organize':
-      await runCodeOrganization(settings);
+      await runOrganizer(settings);
       break;
     case 'fix':
-      await runBugDetectionAndFix(settings);
+      await runBugFixer(settings);
       break;
     case 'ui':
-      await runUiConsistency(settings);
+      await runUIConsistencyCheck(settings);
       break;
     case 'cleanup':
-      await runFileCleanup(settings);
+      await runUnusedFileDetector(settings);
       break;
     case 'update':
       await runAutoUpdate(settings);
       break;
+    case 'deploy-fix':
+      await runDeploymentFixer(settings);
+      break;
+    case 'restructure':
+      await runMiniOrganizer(settings);
+      break;
+    case 'full':
+      // Run all operations in sequence
+      await runOrganizer(settings);
+      await runBugFixer(settings);
+      await runUIConsistencyCheck(settings);
+      await runUnusedFileDetector(settings);
+      await runAutoUpdate(settings);
+      await runDeploymentFixer(settings);
+      break;
     case 'report':
-      // Report only mode - each function detects the --dry-run flag
-      settings.dryRun = true;
-      await runCodeOrganization(settings);
-      await runBugDetectionAndFix(settings);
-      await runUiConsistency(settings);
-      await runFileCleanup(settings);
+      // For report, just do a dry run of all operations
+      const reportSettings = { ...settings, dryRun: true };
+      await runOrganizer(reportSettings);
+      await runBugFixer(reportSettings);
+      await runUIConsistencyCheck(reportSettings);
+      await runUnusedFileDetector(reportSettings);
+      await runAutoUpdate(reportSettings);
+      await runDeploymentFixer(reportSettings);
       break;
     default:
-      console.error(`Unknown operation: ${operation}`);
+      console.error(`Unknown operation: ${settings.operation}`);
       process.exit(1);
   }
 }
 
 // Run code organization
-async function runCodeOrganization(settings) {
+async function runOrganizer(settings) {
   console.log('\n=== Code Organization ===\n');
   
   if (settings.dryRun || settings.reportOnly) {
@@ -472,7 +470,7 @@ async function runCodeOrganization(settings) {
 }
 
 // Run bug detection and fix
-async function runBugDetectionAndFix(settings) {
+async function runBugFixer(settings) {
   console.log('\n=== Bug Detection and Fix ===\n');
   
   // First run the bug detector to find issues
@@ -580,7 +578,7 @@ async function runBugDetectionAndFix(settings) {
 }
 
 // Run UI consistency
-async function runUiConsistency(settings) {
+async function runUIConsistencyCheck(settings) {
   console.log('\n=== UI Consistency ===\n');
   
   if (settings.dryRun || settings.reportOnly) {
@@ -639,7 +637,7 @@ async function runUiConsistency(settings) {
 }
 
 // Run file cleanup
-async function runFileCleanup(settings) {
+async function runUnusedFileDetector(settings) {
   console.log('\n=== File Cleanup ===\n');
   
   // First run the unused file detector
@@ -831,6 +829,112 @@ async function getCurrentBranch() {
   return result.trim();
 }
 
+/**
+ * Run the deployment fixer to automatically fix Vercel deployment issues
+ */
+async function runDeploymentFixer(settings) {
+  console.log('Running Vercel Deployment Fixer...');
+  
+  try {
+    // Create unique branch for fixes if not in dry run mode
+    let originalBranch = '';
+    if (!settings.dryRun && settings.autoCommit) {
+      originalBranch = getCurrentBranch();
+      const fixBranch = `vercel-fix-${new Date().toISOString().split('T')[0]}`;
+      execSync(`git checkout -b ${fixBranch}`, { stdio: settings.verbose ? 'inherit' : 'ignore' });
+      console.log(`Created branch ${fixBranch} for deployment fixes`);
+    }
+    
+    // Run the deployment fixer script
+    const cmd = `node ${__dirname}/vercel-deployment-fixer.js ${settings.dryRun ? '--dry-run' : ''} ${settings.target ? `--project=${settings.target}` : ''}`;
+    const output = execSync(cmd, { stdio: settings.verbose ? 'inherit' : 'pipe' });
+    
+    if (!settings.verbose && output) {
+      console.log(output.toString());
+    }
+    
+    // Commit and create PR if requested
+    if (!settings.dryRun && settings.autoCommit) {
+      const hasChanges = checkForGitChanges();
+      
+      if (hasChanges) {
+        execSync('git add .', { stdio: settings.verbose ? 'inherit' : 'ignore' });
+        execSync('git commit -m "Fix: Automated Vercel deployment fixes"', { stdio: settings.verbose ? 'inherit' : 'ignore' });
+        
+        if (settings.createPR) {
+          execSync(`git push -u origin HEAD`, { stdio: settings.verbose ? 'inherit' : 'ignore' });
+          console.log(`Pushed deployment fixes, create a PR from the current branch to ${originalBranch}`);
+        } else {
+          // Just switch back to the original branch
+          execSync(`git checkout ${originalBranch}`, { stdio: settings.verbose ? 'inherit' : 'ignore' });
+          console.log('Switched back to original branch, changes saved in the fix branch');
+        }
+      } else {
+        console.log('No deployment issues detected or fixed');
+        // Switch back if no changes
+        execSync(`git checkout ${originalBranch}`, { stdio: settings.verbose ? 'inherit' : 'ignore' });
+      }
+    }
+    
+    console.log('Vercel Deployment Fixer complete!');
+  } catch (error) {
+    console.error('Error running Vercel Deployment Fixer:', error.message);
+  }
+}
+
+/**
+ * Run the Mini Organizer to deeply restructure the codebase
+ */
+async function runMiniOrganizer(settings) {
+  console.log('Running Mini Code Organizer for deep restructuring...');
+  
+  try {
+    // Create unique branch for restructuring if not in dry run mode
+    let originalBranch = '';
+    if (!settings.dryRun && settings.autoCommit) {
+      originalBranch = getCurrentBranch();
+      const restructureBranch = `restructure-${new Date().toISOString().split('T')[0]}`;
+      execSync(`git checkout -b ${restructureBranch}`, { stdio: settings.verbose ? 'inherit' : 'ignore' });
+      console.log(`Created branch ${restructureBranch} for deep restructuring`);
+    }
+    
+    // Run the mini organizer script
+    const cmd = `node ${__dirname}/mini-organizer.js ${settings.dryRun ? '--dry-run' : ''}`;
+    const output = execSync(cmd, { stdio: settings.verbose ? 'inherit' : 'pipe' });
+    
+    if (!settings.verbose && output) {
+      console.log(output.toString());
+    }
+    
+    // Commit and create PR if requested
+    if (!settings.dryRun && settings.autoCommit) {
+      const hasChanges = checkForGitChanges();
+      
+      if (hasChanges) {
+        execSync('git add .', { stdio: settings.verbose ? 'inherit' : 'ignore' });
+        execSync('git commit -m "Refactor: Deep code reorganization by Mini Organizer"', { stdio: settings.verbose ? 'inherit' : 'ignore' });
+        
+        if (settings.createPR) {
+          execSync(`git push -u origin HEAD`, { stdio: settings.verbose ? 'inherit' : 'ignore' });
+          console.log(`Pushed restructuring changes, create a PR from the current branch to ${originalBranch}`);
+        } else {
+          // Just switch back to the original branch
+          execSync(`git checkout ${originalBranch}`, { stdio: settings.verbose ? 'inherit' : 'ignore' });
+          console.log('Switched back to original branch, changes saved in the restructure branch');
+        }
+      } else {
+        console.log('No restructuring needed or performed');
+        // Switch back if no changes
+        execSync(`git checkout ${originalBranch}`, { stdio: settings.verbose ? 'inherit' : 'ignore' });
+      }
+    }
+    
+    console.log('Mini Code Organizer complete!');
+  } catch (error) {
+    console.error('Error running Mini Code Organizer:', error.message);
+  }
+}
+
 // Main function
 async function main() {
   console.log('\n=== Edison Agent ===\n');
@@ -852,13 +956,13 @@ async function main() {
   const results = { settings };
   
   // Combine with operation results
-  Object.assign(results, await runOperation(settings.operation, settings));
+  Object.assign(results, await runOperation(settings));
   
   // Generate report
   const summary = generateReportSummary({ settings, ...results });
   
   // Create PR if requested
-  if (settings.createPr && settings.targetBranch && summary.overall.changesApplied) {
+  if (settings.createPR && settings.targetBranch && summary.overall.changesApplied) {
     const title = `Edison Agent: Automated Code Maintenance (${settings.operation})`;
     const body = `This PR contains automated code maintenance changes applied by the Edison Agent.\n\n${generateMarkdownReport(summary)}`;
     
