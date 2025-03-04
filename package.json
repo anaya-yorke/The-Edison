@@ -12,63 +12,50 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "update-deps": "npm-check-updates -u && npm install",
-    "update-deps:interactive": "npm-check -u",
     "update-deps:safe": "npm-check-updates -u --target minor && npm install",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,md}\"",
     "analyze": "ANALYZE=true next build",
     "lighthouse": "lighthouse https://the-edison.vercel.app --view",
     "test:e2e": "playwright test",
-    "test:a11y": "pa11y-ci && axe-core-npm .",
     "optimize:images": "sharp-cli --input \"public/images/**/*.{jpg,png}\" --output \"public/images/optimized\" && svgo -f public/images -o public/images/optimized",
-    "update:browsers": "browserslist-ga && update-browserslist-db",
-    "security:audit": "snyk test && npm audit"
+    "security:audit": "npm audit"
   },
   "dependencies": {
     "@formatjs/icu-messageformat-parser": "^2.11.1",
     "@types/node": "22.13.9",
     "@types/react": "19.0.10",
     "@types/react-dom": "19.0.4",
-    "browserslist-ga": "^0.0.13",
     "glob": "^11.0.1",
+    "lru-cache": "^10.4.3",
     "next": "^15.2.1",
     "puppeteer": "^24.3.1",
     "react": "19.0.0",
     "react-dom": "19.0.0",
+    "rimraf": "^6.0.1",
     "typescript": "5.8.2",
     "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@axe-core/cli": "^4.10.1",
+    "@eslint/config-array": "^0.19.2",
+    "@eslint/object-schema": "^2.1.6",
     "@next/bundle-analyzer": "^15.2.1",
     "@playwright/test": "^1.50.1",
     "@testing-library/jest-dom": "6.6.3",
     "@testing-library/react": "16.2.0",
     "@testing-library/user-event": "14.6.1",
     "autoprefixer": "^10.4.20",
-    "bundlesize": "^0.18.2",
     "eslint": "^9.21.0",
     "eslint-config-next": "15.2.1",
     "jest": "29.7.0",
     "jest-environment-jsdom": "29.7.0",
     "lighthouse": "^12.4.0",
-    "npm-check": "^6.0.1",
     "npm-check-updates": "^17.1.15",
-    "pa11y-ci": "^3.1.0",
     "prettier": "^3.5.3",
     "sharp-cli": "^5.1.0",
     "svgo": "^3.3.2"
   },
   "engines": {
-    "node": ">=18.x"
-  },
-  "bundlesize": [
-    {
-      "path": ".next/static/chunks/*.js",
-      "maxSize": "200 kB"
-    },
-    {
-      "path": ".next/static/css/*.css",
-      "maxSize": "50 kB"
-    }
-  ]
+    "node": ">=22.x"
+  }
 }

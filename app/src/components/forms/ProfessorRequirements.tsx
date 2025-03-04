@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import styles from '../styles/ProfessorRequirements.module.css';
+import styles from '../../styles/components/ProfessorRequirements.module.css';
 
 interface Requirement {
   id: string;

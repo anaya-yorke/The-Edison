@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Head from 'next/head';
 import styles from '../styles/Home.module.css';
 import StyleSelector from '../components/forms/StyleSelector';
-import ProfessorRequirements from '../components/ProfessorRequirements';
+import ProfessorRequirements from '../components/forms/ProfessorRequirements';
 
 export default function Home() {
   // State for the essay content and selected style
