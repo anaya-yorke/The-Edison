@@ -59,7 +59,13 @@ const designSystem = {
 };
 
 // Sticker Component
-const Sticker = ({ emoji, size = 36, rotation, onClick }: { emoji: string, size?: number, rotation?: number, onClick?: () => void }) => {
+const Sticker = ({ emoji, size = 36, rotation, onClick, style }: { 
+  emoji: string, 
+  size?: number, 
+  rotation?: number, 
+  onClick?: () => void,
+  style?: React.CSSProperties 
+}) => {
   const [isHovered, setIsHovered] = useState(false);
   const randomRotation = rotation || Math.floor(Math.random() * 16) - 8;
   
@@ -72,6 +78,7 @@ const Sticker = ({ emoji, size = 36, rotation, onClick }: { emoji: string, size?
     zIndex: 10,
     filter: `drop-shadow(0 2px 3px rgba(0,0,0,0.15))`,
     userSelect: 'none',
+    ...style, // Merge any additional style props
   };
   
   return (
@@ -161,7 +168,7 @@ const AppContainer: React.FC = () => {
           key={index}
           emoji={emoji}
           size={36 + (index % 3) * 8} // Varying sizes
-          {...getStickerPosition(index)}
+          style={getStickerPosition(index)}
         />
       ))}
       
@@ -215,7 +222,7 @@ const Header: React.FC<ThemeProps> = ({ currentTheme, setTheme }) => {
 const ThemeSelector: React.FC<ThemeProps> = ({ currentTheme, setTheme }) => {
   const [isOpen, setIsOpen] = useState(false);
   
-  const selectorStyle = {
+  const selectorStyle: React.CSSProperties = {
     position: 'relative',
   };
   
@@ -766,7 +773,10 @@ const FormatSection: React.FC<FormatSectionProps> = ({ currentTheme, onAddSticke
       }}>
         <button style={buttonStyle(true)}>Format</button>
         <button style={buttonStyle(false)}>Export</button>
-        <button style={stickerButtonStyle} onClick={onAddSticker}>
+        <button 
+          style={stickerButtonStyle} 
+          onClick={() => onAddSticker('😊')}
+        >
           😊
         </button>
       </div>
@@ -775,8 +785,8 @@ const FormatSection: React.FC<FormatSectionProps> = ({ currentTheme, onAddSticke
 };
 
 // Progress Section Component
-const ProgressSection = ({ currentTheme }) => {
-  const progressBarContainerStyle = {
+const ProgressSection: React.FC<{ currentTheme: PastelColor }> = ({ currentTheme }) => {
+  const progressBarContainerStyle: React.CSSProperties = {
     height: '10px',
     backgroundColor: '#e2e8f0',
     borderRadius: '5px',
@@ -784,7 +794,7 @@ const ProgressSection = ({ currentTheme }) => {
     margin: `${designSystem.spacing[3]} 0`,
   };
   
-  const progressBarStyle = {
+  const progressBarStyle: React.CSSProperties = {
     height: '100%',
     width: '50%',
     backgroundColor: pastelColors[currentTheme],
