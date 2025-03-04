@@ -13,7 +13,15 @@
     "test:coverage": "jest --coverage",
     "update-deps": "npm-check-updates -u && npm install",
     "update-deps:interactive": "npm-check -u",
-    "update-deps:safe": "npm-check-updates -u --target minor && npm install"
+    "update-deps:safe": "npm-check-updates -u --target minor && npm install",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,md}\"",
+    "analyze": "ANALYZE=true next build",
+    "lighthouse": "lighthouse https://anaya-yorke.github.io/The-Edison --view",
+    "test:e2e": "playwright test",
+    "test:a11y": "pa11y-ci && axe-core-npm .",
+    "optimize:images": "sharp-cli --input \"public/images/**/*.{jpg,png}\" --output \"public/images/optimized\" && svgo -f public/images -o public/images/optimized",
+    "update:browsers": "browserslist-ga && update-browserslist-db",
+    "security:audit": "snyk test && npm audit"
   },
   "dependencies": {
     "@types/node": "18.19.79",
@@ -25,17 +33,38 @@
     "typescript": "4.9.5"
   },
   "devDependencies": {
+    "@axe-core/cli": "^4.7.3",
+    "@next/bundle-analyzer": "^13.4.19",
+    "@playwright/test": "^1.38.0",
     "@testing-library/jest-dom": "5.16.5",
     "@testing-library/react": "13.4.0",
     "@testing-library/user-event": "14.4.3",
+    "autoprefixer": "^10.4.14",
+    "browserslist-ga": "^1.5.0",
+    "bundlesize": "^0.18.1",
     "eslint": "^8.56.0",
     "eslint-config-next": "12.3.4",
     "jest": "29.3.1",
     "jest-environment-jsdom": "29.3.1",
+    "lighthouse": "^10.4.0",
     "npm-check": "^6.0.1",
-    "npm-check-updates": "^17.1.15"
+    "npm-check-updates": "^17.1.15",
+    "pa11y-ci": "^3.0.1",
+    "prettier": "^2.8.8",
+    "sharp-cli": "^4.1.1",
+    "svgo": "^3.0.2"
   },
   "engines": {
     "node": ">=18.x"
-  }
+  },
+  "bundlesize": [
+    {
+      "path": ".next/static/chunks/*.js",
+      "maxSize": "200 kB"
+    },
+    {
+      "path": ".next/static/css/*.css",
+      "maxSize": "50 kB"
+    }
+  ]
 }
