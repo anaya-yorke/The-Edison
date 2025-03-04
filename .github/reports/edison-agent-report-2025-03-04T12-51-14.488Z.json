@@ -1,0 +1,18 @@
+{
+  "timestamp": "2025-03-04T12-51-14.488Z",
+  "results": {
+    "settings": {
+      "operation": "restructure",
+      "dryRun": false,
+      "verbose": false,
+      "autoCommit": true,
+      "createPR": true,
+      "safety": "safe",
+      "target": null
+    }
+  },
+  "overall": {
+    "success": false,
+    "changesApplied": false
+  }
+}
