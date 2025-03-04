@@ -1,23 +1,11 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/next",
-      "config": {
-        "buildCommand": "npm run vercel-build",
-        "outputDirectory": "out"
-      }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
-    }
-  ],
+  "buildCommand": "npm run vercel-build",
+  "outputDirectory": "out",
+  "framework": "nextjs",
   "env": {
     "NEXT_TYPESCRIPT_CONFIG_PATH": "tsconfig.deploy.json",
-    "NODE_ENV": "production"
+    "NODE_ENV": "production",
+    "NEXT_TELEMETRY_DISABLED": "1"
   }
 } 
