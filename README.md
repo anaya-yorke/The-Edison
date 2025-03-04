@@ -6,7 +6,7 @@ Tired of having to constantly pay to format essays?
 
 Well, meet The Edison - a formatting tool that formats your essays perfectly in MLA, APA, Chicago, Harvard, or whatever format necessary. You don't have to cry anymore; The Edison is here to format your essay for you.
 
-✨ **[Try It Now](https://anaya-yorke.github.io/The-Edison)** ✨
+**[Try It Now](https://anaya-yorke.github.io/The-Edison)**
 
 ## Features
 
@@ -16,14 +16,14 @@ Well, meet The Edison - a formatting tool that formats your essays perfectly in 
 - **Automatic citations** and bibliography formatting
 - **Student-friendly interface** designed for quick formatting
 
-## 📚 Supported Styles
+## Supported Styles
 
 - **MLA (9th Edition)**
 - **APA (7th Edition)**
 - **Chicago (17th Edition)**
 - **Harvard (2021)**
 
-## 🚀 Quick Start
+## Quick Start
 
 ```bash
 git clone https://github.com/anaya-yorke/The-Edison.git
@@ -34,7 +34,7 @@ npm run dev
 
 Visit `http://localhost:3000` in your browser to start using The Edison.
 
-## 💡 How to Use
+## How to Use
 
 1. Paste your essay text
 2. Select your required citation style
