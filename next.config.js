@@ -2,11 +2,14 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    loader: 'akamai',
-    path: process.env.NODE_ENV === 'production' ? '/The-Edison' : '/',
+    loader: 'default',
+    domains: [],
   },
-  assetPrefix: process.env.NODE_ENV === 'production' ? '/The-Edison' : '/',
-  basePath: process.env.NODE_ENV === 'production' ? '/The-Edison' : '',
+  // Only use these settings for production GitHub Pages deployment
+  ...(process.env.NODE_ENV === 'production' && process.env.GITHUB_PAGES === 'true' ? {
+    assetPrefix: '/The-Edison',
+    basePath: '/The-Edison',
+  } : {})
 }
 
 module.exports = nextConfig 

@@ -10,7 +10,7 @@
     "lint": "next lint",
     "deploy": "next build && next export && touch out/.nojekyll && gh-pages -d out",
     "deploy:skip-ts": "./deploy.sh",
-    "vercel-build": "export NEXT_TELEMETRY_DISABLED=1 && export NEXT_TYPESCRIPT_CONFIG_PATH=tsconfig.deploy.json && next build && next export && mkdir -p out && touch out/.nojekyll && if [ ! -f \"out/index.html\" ]; then cp fallback.html out/index.html; fi",
+    "vercel-build": "export NEXT_TYPESCRIPT_CONFIG_PATH=tsconfig.deploy.json && next build",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"
