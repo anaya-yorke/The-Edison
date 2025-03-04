@@ -1,0 +1,153 @@
+/* Global CSS Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  background: #121212;
+  color: #F5F5F5;
+  overflow-x: hidden;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+}
+
+/* Remove default outline on focusable elements */
+:focus {
+  outline: none;
+}
+
+/* Custom focus styles */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  box-shadow: 0 0 0 2px #FF00FF;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #121212;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #FF00FF, #8A2BE2);
+  border-radius: 0;
+  border: 2px solid #121212;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #FF66FF, #9A4BE2);
+}
+
+/* Selection styling */
+::selection {
+  background: rgba(138, 43, 226, 0.8);
+  color: #F5F5F5;
+}
+
+/* Apply pixel font to all h1, h2, h3 elements */
+h1, h2, h3 {
+  font-family: 'Press Start 2P', cursive;
+  letter-spacing: 0.5px;
+}
+
+/* Default transition for interactive elements */
+a, button, input, select, textarea {
+  transition: all 0.2s ease-in-out;
+}
+
+/* 8-bit style input focus */
+input:focus, textarea:focus, select:focus {
+  border-color: #FF00FF !important;
+  box-shadow: 0 0 0 2px rgba(255, 0, 255, 0.25);
+}
+
+/* Placeholder styling */
+::placeholder {
+  color: rgba(245, 245, 245, 0.5);
+}
+
+/* Disable default appearance for selects */
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%238A2BE2' stroke-width='2' stroke-linecap='square' stroke-linejoin='arcs'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  padding-right: 30px;
+}
+
+/* Custom checkbox styling */
+input[type="checkbox"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #8A2BE2;
+  background: #121212;
+  position: relative;
+  cursor: pointer;
+}
+
+input[type="checkbox"]:checked {
+  background: #8A2BE2;
+}
+
+input[type="checkbox"]:checked::before {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background-color: #F5F5F5;
+  top: 2px;
+  left: 2px;
+}
+
+/* Utility classes */
+.pixelated {
+  font-family: 'Press Start 2P', cursive;
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #FF00FF, #8A2BE2);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.pixel-border {
+  border: 2px solid #8A2BE2;
+}
+
+.pixel-shadow {
+  box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.5);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+} 
