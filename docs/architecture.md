@@ -90,20 +90,24 @@ Key design elements include:
 
 ## Deployment
 
-The Edison is configured for GitHub Pages deployment. The deployment process uses:
+The Edison is deployed on Vercel for optimal performance and reliability. The deployment process uses:
 
-1. **next.config.js** - Configures Next.js for static exports and proper path handling
-2. **package.json scripts** - Includes build, export, and deploy commands
-3. **deploy.sh** - Shell script for automating the GitHub Pages deployment process
+1. **vercel.json** - Configures Vercel-specific deployment settings
+2. **next.config.js** - Configures Next.js for proper path handling and optimization
+3. **package.json scripts** - Includes build and export commands
 
-To deploy the application:
+The application uses continuous deployment through Vercel's GitHub integration, which automatically deploys:
+- Production builds when changes are pushed to the main branch
+- Preview builds for pull requests
+
+To deploy the application manually:
 
 ```bash
-# Option 1: Using npm script
-npm run deploy
+# Deploy to Vercel
+vercel
 
-# Option 2: Using the deployment script
-./deploy.sh
+# Deploy to production
+vercel --prod
 ```
 
 ## Future Development

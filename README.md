@@ -1,37 +1,69 @@
-# The Edison -- _never struggle with formatting an essay again_
+# The Edison | MLA, APA, Chicago & Harvard Essay Formatter
 
-Tired of switching between Google tabs, asking ChatGPT or Claude if your essay formatting is okay (when you know it's not) and struggling to fix formatting when you know they won't get it right?  
-Tired of getting a B because you missed one simple formatting mistake?  
-Tired of having to constantly pay to format essays?
+[![Essay Formatting Tool](https://img.shields.io/badge/Essay%20Formatter-The%20Edison-8A2BE2)](https://theedison.vercel.app)
+[![MLA Format](https://img.shields.io/badge/MLA%20Format-9th%20Edition-FF00FF)](https://theedison.vercel.app)
+[![APA Format](https://img.shields.io/badge/APA%20Format-7th%20Edition-8A2BE2)](https://theedison.vercel.app)
+[![Chicago Format](https://img.shields.io/badge/Chicago%20Format-17th%20Edition-FF00FF)](https://theedison.vercel.app)
+[![Harvard Format](https://img.shields.io/badge/Harvard%20Format-2021-8A2BE2)](https://theedison.vercel.app)
 
-Well, meet The Edison - a formatting tool that formats your essays perfectly in MLA, APA, Chicago, Harvard, or whatever format necessary. You don't have to cry anymore; The Edison is here to format your essay for you.
+> The #1 free essay formatting tool for students - perfect MLA, APA, Chicago, or Harvard formatting every time!
 
-**[Try It Now](https://anaya-yorke.github.io/The-Edison)**
+Are you struggling with:
+- ❌ Formatting your essays in MLA, APA, Chicago, or Harvard styles?
+- ❌ Wasting time checking citation rules when you should be writing?
+- ❌ Getting lower grades because of formatting mistakes?
+- ❌ Paying for expensive formatting services?
 
-## Key Features
+**📝 The Edison automatically formats your essays in MLA, APA, Chicago, or Harvard style with 100% accuracy - for free!**
 
-- **Instant formatting**: MLA, APA, Chicago, or Harvard styles in one click.
-- **Save custom settings**: Store your professor's specific requirements.
-- **Direct export**: Export directly to Word or Google Docs.
-- **Automated citations**: Generate bibliographies automatically.
-- **User-friendly**: Designed for quick and easy use.
+**[✨ FORMAT YOUR ESSAY NOW ✨](https://theedison.vercel.app)**
 
-## Supported Citation Styles
+## 🚀 What Makes The Edison the Best Essay Formatter
 
-- **MLA (9th Edition)**
-- **APA (7th Edition)**
-- **Chicago (17th Edition)**
-- **Harvard (2021)**
+The Edison is the ultimate essay formatting tool designed specifically for students who need perfect MLA, APA, Chicago, or Harvard formatting:
 
-## How to Use
+- **⚡ Instant Formatting**: Convert any document to perfect MLA, APA, Chicago, or Harvard format in seconds
+- **🔄 Citation Generation**: Automatically format in-text citations and create bibliographies/works cited pages
+- **🧠 Smart Detection**: Intelligently recognizes document elements like titles, headings, quotes, and citations
+- **💾 Professor Presets**: Save your professor's specific formatting requirements for reuse
+- **📱 Works Everywhere**: Compatible with all devices - format essays on your laptop, tablet, or phone
+- **📤 Easy Export**: Directly export to Word, PDF, or Google Docs with all formatting intact
+- **🔒 Privacy First**: Your essays never leave your device - 100% private formatting
 
-1. Paste your essay.
-2. Select your citation style.
-3. Enter any professor-specific requirements.
-4. Click "Format Essay".
-5. Export your formatted essay!
+## 📋 Supported Citation Styles
 
-## For Developers
+### MLA Format (9th Edition)
+Perfect for literature, arts, and humanities courses. The Edison follows the latest MLA Handbook (9th Edition) requirements with proper header formatting, in-text citations, and Works Cited page generation.
+
+### APA Format (7th Edition) 
+Ideal for social sciences, psychology, and education. The Edison implements every APA 7th Edition rule including title page formatting, running heads, abstract formatting, and References section styling.
+
+### Chicago Style (17th Edition)
+Preferred in history, arts, and some humanities disciplines. The Edison supports both Notes-Bibliography and Author-Date systems with properly formatted footnotes/endnotes and bibliography pages.
+
+### Harvard Style (2021)
+Common in UK universities and business courses. The Edison creates properly formatted in-text citations (Smith, 2020, p.45) and generates a perfectly formatted reference list.
+
+## 🛠️ How to Use The Edison Essay Formatter
+
+1. **Paste Your Essay**: Copy and paste your essay text into The Edison
+2. **Select Citation Style**: Choose MLA, APA, Chicago, or Harvard format
+3. **Set Requirements**: Add any professor-specific formatting requirements
+4. **Format Essay**: Click one button to instantly format your entire essay
+5. **Export**: Download your perfectly formatted essay ready for submission
+
+## 👨‍🏫 Professor Requirement Customization
+
+The Edison allows you to customize formatting to meet your professor's specific requirements:
+
+- Font type and size adjustments
+- Custom margin settings
+- Line spacing modifications
+- Header and page number positioning
+- Title page configurations
+- Citation style variations
+
+## 📚 For Developers
 
 ### Edison Agent
 
@@ -147,4 +179,6 @@ The mini organizer creates a detailed report in `.github/reports/` showing all c
 
 ---
 
-Designed to help students focus on writing, not formatting.
+Designed by students, for students. Focus on your ideas, let The Edison handle the formatting.
+
+Keywords: essay formatter, MLA formatter, APA formatter, Chicago formatter, Harvard formatter, citation generator, paper formatter, essay format tool, academic formatting, bibliography generator, works cited generator
