@@ -1,0 +1,183 @@
+.container {
+  padding: 0 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 0;
+  margin-bottom: 2rem;
+}
+
+.logo {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  margin: 0;
+  line-height: 1.15;
+  font-size: 2rem;
+  color: #333;
+}
+
+.subtitle {
+  margin: 0.5rem 0 0;
+  line-height: 1.5;
+  font-size: 1rem;
+  color: #666;
+}
+
+.userSection {
+  display: flex;
+  align-items: center;
+}
+
+.getTicket {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #0070f3;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.getTicket:hover {
+  background-color: #0058c0;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.editorContainer {
+  width: 100%;
+  margin: 2rem 0;
+  min-height: 300px;
+}
+
+.essayInput {
+  width: 100%;
+  height: 300px;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.essayPreview {
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 2rem;
+  min-height: 300px;
+  background-color: white;
+}
+
+.essayContent {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 12pt;
+  line-height: 2;
+}
+
+.essayTitle {
+  text-align: center;
+  font-size: 12pt;
+  font-weight: bold;
+  margin: 1rem 0;
+}
+
+.profRequirementsToggle {
+  cursor: pointer;
+  color: #0070f3;
+  font-weight: 500;
+  margin: 1rem 0;
+  user-select: none;
+}
+
+.actionButtons {
+  margin-top: 2rem;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.formatButton {
+  padding: 0.8rem 2rem;
+  background-color: #0070f3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.formatButton:hover {
+  background-color: #0058c0;
+}
+
+.exportOptions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.exportButton {
+  padding: 0.8rem 1.5rem;
+  background-color: #34d399;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.exportButton:hover {
+  background-color: #10b981;
+}
+
+.footer {
+  width: 100%;
+  padding: 2rem 0;
+  margin-top: 4rem;
+  border-top: 1px solid #eaeaea;
+}
+
+.tagline {
+  text-align: center;
+}
+
+.taglineText {
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .exportOptions {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .exportButton {
+    width: 100%;
+  }
+} 

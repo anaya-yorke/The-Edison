@@ -1,0 +1,51 @@
+.container {
+  width: 100%;
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.styleButtons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.styleButton {
+  padding: 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.styleButton:hover {
+  border-color: #0070f3;
+  transform: translateY(-2px);
+}
+
+.styleButton.selected {
+  border-color: #0070f3;
+  background: #f0f7ff;
+}
+
+.styleName {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.styleVersion {
+  display: block;
+  font-size: 0.875rem;
+  color: #666;
+} 

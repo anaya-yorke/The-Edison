@@ -1,6 +1,6 @@
-# The Edison | MLA, APA, Chicago & Harvard Essay Formatter
+# Edison | MLA, APA, Chicago & Harvard Essay Formatter
 
-[![Essay Formatting Tool](https://img.shields.io/badge/Essay%20Formatter-The%20Edison-8A2BE2)](https://theedison.vercel.app)
+[![Essay Formatting Tool](https://img.shields.io/badge/Essay%20Formatter-Edison-8A2BE2)](https://theedison.vercel.app)
 [![MLA Format](https://img.shields.io/badge/MLA%20Format-9th%20Edition-FF00FF)](https://theedison.vercel.app)
 [![APA Format](https://img.shields.io/badge/APA%20Format-7th%20Edition-8A2BE2)](https://theedison.vercel.app)
 [![Chicago Format](https://img.shields.io/badge/Chicago%20Format-17th%20Edition-FF00FF)](https://theedison.vercel.app)
@@ -14,13 +14,13 @@ Common student formatting challenges:
 - Meeting professor-specific formatting requirements
 - Avoiding unnecessary costs for formatting services
 
-**The Edison automatically formats your essays in major academic styles with 100% accuracy - for free.**
+**Edison automatically formats your essays in major academic styles with 100% accuracy - for free.**
 
 **[FORMAT YOUR ESSAY NOW](https://theedison.vercel.app)**
 
-## What Makes The Edison Special
+## What Makes Edison Special
 
-The Edison helps students create perfectly formatted academic papers:
+Edison helps students create perfectly formatted academic papers:
 
 - **Instant Formatting**: Convert any document to MLA, APA, Chicago, or Harvard format in seconds
 - **Citation Support**: Properly format in-text citations and bibliographies/works cited pages
@@ -44,7 +44,7 @@ Used in history, arts, and some humanities disciplines. Supports both Notes-Bibl
 ### Harvard Style (2021)
 Common in UK universities and business programs. Creates correct in-text citations and formatted reference lists.
 
-## How to Use The Edison
+## How to Use Edison
 
 1. Paste your essay text
 2. Select your citation style (MLA, APA, Chicago, or Harvard)
@@ -114,6 +114,6 @@ Analyzes code structure to suggest improvements for organization, file placement
 
 ---
 
-Designed for students, by students. Focus on your ideas while The Edison handles the formatting.
+Designed for students, by students. Focus on your ideas while Edison handles the formatting.
 
 Keywords: essay formatter, MLA formatter, APA formatter, Chicago formatter, Harvard formatter, citation generator, paper formatter, essay format tool, academic formatting, bibliography generator, works cited generator
